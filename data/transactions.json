@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "order_id": "1",
+        "amount": "100",
+        "status": "paid"
+    },
+    {
+        "id": 2,
+        "order_id": "1",
+        "amount": "100",
+        "status": "paid"
+    },
+    {
+        "id": 3,
+        "order_id": "1",
+        "amount": "100",
+        "status": "paid"
+    },
+    {
+        "id": 4,
+        "order_id": "1",
+        "amount": "1500",
+        "status": "paid"
+    }
+]

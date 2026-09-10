@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "ivan",
+        "second_name": "ivan",
+        "role": "Исполнитель",
+        "password": "123",
+        "email": "ivan"
+    },
+    {
+        "id": 2,
+        "name": "egor",
+        "second_name": "egor",
+        "role": "Заказчик",
+        "password": "123",
+        "email": "egor"
+    }
+]

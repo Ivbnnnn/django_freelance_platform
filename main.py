@@ -1,10 +1,32 @@
-# Размещение заказа
+from services.users import create_user, list_users
+from services.orders import create_order, list_orders
+from services.applications import create_application, list_applications
+from services.transactions import create_transaction, list_transactions
+from services.reviews import create_review, list_reviews
 
-order_name = input("Введите название заказа:")
-order_price = input("Введите бюджет заказа:") #формата min-max, 1000-2000
+def show_items(items):
+    if items:
+        print(*items, sep="\n")
+    else:
+        print("Заказов пока нет.")
 
-def place_order(order_name: str, order_price: str):
-    print(f"Ваш заказ {order_name} успешно размещен.")
-    print(f"Ориентировочный бюджет равен: {order_price} рублей.")
+def main():
+    while True:
+        print("1 user 2 order 3 orders 4 application 5 payment 6 review 7 users 8 applications 9 payments 10 reviews 0 exit")
+        choice = input("Action: ").strip()
+        try:
+            if choice == "0": break
+            if choice == "1": print(create_user(input("Name: "), input("Surname: "), input("Role: "), input("Password: "), input("Email: ")))
+            elif choice == "2": print(create_order(input("Name: "), input("Budget: "), input("Customer id: ")))
+            elif choice == "3": show_items(list_orders())
+            elif choice == "4": print(create_application(input("Order id: "), input("Executor id: "), input("Comment: ")))
+            elif choice == "5": print(create_transaction(input("Order id: "), input("Amount: ")))
+            elif choice == "6": print(create_review(input("Order id: "), input("Author id: "), input("Rating: "), input("Text: ")))
+            elif choice == "7": print(*list_users(), sep="\n")
+            elif choice == "8": print(*list_applications(), sep="\n")
+            elif choice == "9": print(*list_transactions(), sep="\n")
+            elif choice == "10": print(*list_reviews(), sep="\n")
+            else: print("Unknown command")
+        except (ValueError, TypeError) as error: print(f"Error: {error}")
 
-place_order(order_name, order_price)
+if __name__ == "__main__": main()

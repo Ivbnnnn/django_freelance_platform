@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1,
+        "name": "Сайт",
+        "budget": "1000-2000",
+        "customer_id": "1",
+        "status": "new"
+    }
+]
