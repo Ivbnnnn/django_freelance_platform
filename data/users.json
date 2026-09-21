@@ -14,5 +14,21 @@
         "role": "Заказчик",
         "password": "123",
         "email": "egor"
+    },
+    {
+        "id": 3,
+        "name": "ivan",
+        "second_name": "ivan",
+        "role": "Исполнитель",
+        "password": "ivan",
+        "email": "ivan"
+    },
+    {
+        "id": 4,
+        "name": "иван",
+        "second_name": "иван",
+        "role": "Исполнитель",
+        "password": "иван",
+        "email": "иван"
     }
 ]

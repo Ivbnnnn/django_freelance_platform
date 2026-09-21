@@ -5,5 +5,12 @@
         "budget": "1000-2000",
         "customer_id": "1",
         "status": "new"
+    },
+    {
+        "id": 2,
+        "name": "1",
+        "budget": "1",
+        "customer_id": "1",
+        "status": "new"
     }
 ]

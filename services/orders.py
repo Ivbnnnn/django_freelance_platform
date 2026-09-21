@@ -1,14 +1,24 @@
-from .utils import append_data, read_data
+from models import Order
+from .users import list_users
+from .utils import read_data, write_data
 
 
-def create_order(name, budget, customer_id=""):
-    if not name or not budget:
-        raise ValueError("Название и бюджет обязательны")
-    return append_data(
-        "orders.json",
-        {"name": name, "budget": budget, "customer_id": customer_id, "status": "new"},
+def list_orders() -> list[Order]:
+    """Загружает заказы и связывает их с объектами заказчиков."""
+    users = {str(user.id): user for user in list_users()}
+    return [Order.from_dict(record, users) for record in read_data("orders.json")]
+
+
+def create_order(name: str, budget: str, customer_id: str = "") -> Order:
+    orders = list_orders()
+    users = {str(user.id): user for user in list_users()}
+    order = Order(
+        order_id=max((item.id for item in orders), default=0) + 1,
+        name=name,
+        budget=budget,
+        customer=users.get(str(customer_id)),
+        customer_id=str(customer_id),
     )
-
-
-def list_orders():
-    return read_data("orders.json")
+    orders.append(order)
+    write_data("orders.json", orders)
+    return order
