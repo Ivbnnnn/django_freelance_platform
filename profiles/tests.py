@@ -1,3 +1,1 @@
-from django.test import TestCase
-
-# Create your tests here.
+﻿"""Проверки веб-страниц находятся в tests/test_web.py."""

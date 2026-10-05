@@ -1,0 +1,29 @@
+body {
+    background: #f7f8fb;
+    color: #1e293b;
+}
+
+.navbar-brand {
+    color: #244ab5;
+}
+
+.nav-link {
+    color: #334155;
+}
+
+.nav-link:hover {
+    color: #244ab5;
+}
+
+.hero {
+    background: linear-gradient(135deg, #dbeafe, #eff6ff 55%, #ffffff);
+    border: 1px solid #bfdbfe;
+}
+
+.list-group-item:hover {
+    background: #f1f5ff;
+}
+
+.card {
+    border-color: #e2e8f0;
+}

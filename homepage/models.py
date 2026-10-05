@@ -1,3 +1,1 @@
-from django.db import models
-
-# Create your models here.
+﻿"""На этапе ПР5 данные читаются из объектной модели и JSON."""
