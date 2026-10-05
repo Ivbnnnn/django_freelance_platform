@@ -1,2 +1,3 @@
 flake8
 pytest
+Django==5.2.*
