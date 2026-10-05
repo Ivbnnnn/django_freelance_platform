@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+
+def index(request):
+    return HttpResponse("Отклики")
+
+
+def detail(request, application_id):
+    return HttpResponse(f"Отклик №{application_id}")

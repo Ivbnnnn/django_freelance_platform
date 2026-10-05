@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+
+def index(request):
+    return HttpResponse("Участники")
+
+
+def detail(request, user_id):
+    return HttpResponse(f"Участник №{user_id}")
