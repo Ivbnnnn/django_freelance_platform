@@ -30,19 +30,18 @@ def page(title, content):
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{title} · Сервис исполнителей</title>
+  <title>{title} · Freelance</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="{stylesheet}">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg bg-white border-bottom" aria-label="Основная навигация">
     <div class="container flex-wrap gap-2">
-      <a class="navbar-brand fw-bold" href="{home}">Исполнители</a>
+      <a class="navbar-brand fw-bold" href="{home}">Freelance</a>
       <div class="nav flex-wrap">{navigation}</div>
     </div>
   </nav>
   <main class="container py-4 py-md-5">{content}</main>
-  <footer class="container pb-4 text-muted small">Учебный проект · ПР5</footer>
 </body>
 </html>""",
         title=title,
