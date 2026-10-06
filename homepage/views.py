@@ -124,10 +124,7 @@ def index(request):
     )
     body = format_html(
         '<section class="hero rounded-4 p-4 p-md-5">'
-        '<p class="text-uppercase small fw-semibold">Сервис поиска исполнителей</p>'
-        '<h1 class="display-5 fw-bold">Заказы и исполнители в одном месте</h1>'
-        '<p class="lead mb-4">Просматривайте заказы, отклики, платежи и отзывы. '
-        'Данные загружаются из существующего JSON-хранилища проекта.</p>'
+        '<h1 class="display-5 fw-bold mb-4">Сервис поиска исполнителей</h1>'
         '<div class="d-flex flex-wrap gap-2">{}</div></section>',
         links,
     )
