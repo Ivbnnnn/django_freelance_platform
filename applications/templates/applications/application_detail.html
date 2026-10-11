@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Отклик №{{ application.id }}{% endblock %}
+
+{% block content %}
+<a class="link-secondary" href="{% url 'applications:index' %}">← К списку</a>
+<h1 class="mt-3 mb-4">Отклик №{{ application.id }}</h1>
+<div class="card shadow-sm"><div class="card-body"><dl class="row mb-0">
+  <dt class="col-sm-3">ID</dt><dd class="col-sm-9">{{ application.id }}</dd>
+  <dt class="col-sm-3">Заказ</dt><dd class="col-sm-9">
+    {% if application.order %}
+      <a href="{% url 'orders:detail' application.order.id %}">{{ application.order.name }}</a>
+    {% else %}
+      №{{ application.order_id }} (запись отсутствует)
+    {% endif %}
+  </dd>
+  <dt class="col-sm-3">Исполнитель</dt><dd class="col-sm-9">
+    {% if application.executor %}
+      <a href="{% url 'profiles:detail' application.executor.id %}">{{ application.executor.name }} {{ application.executor.second_name }}</a>
+    {% else %}
+      №{{ application.executor_id }} (запись отсутствует)
+    {% endif %}
+  </dd>
+  <dt class="col-sm-3">Комментарий</dt><dd class="col-sm-9">{{ application.comment|default:'Без комментария' }}</dd>
+</dl></div></div>
+{% endblock %}

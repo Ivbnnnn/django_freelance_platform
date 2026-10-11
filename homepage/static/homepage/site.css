@@ -35,6 +35,11 @@ body {
     border-color: #e2e8f0;
 }
 
+.order-status {
+    align-self: center;
+    white-space: nowrap;
+}
+
 .site-footer {
     color: #64748b;
     font-size: .9rem;

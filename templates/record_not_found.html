@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h1 class="text-danger">{{ title }}</h1>
+<p>Запись с таким ID не найдена.</p>
+<a class="btn btn-outline-secondary" href="{% url back_route %}">К списку</a>
+{% endblock %}

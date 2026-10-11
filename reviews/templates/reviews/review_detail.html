@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзыв №{{ review.id }}{% endblock %}
+
+{% block content %}
+<a class="link-secondary" href="{% url 'reviews:index' %}">← К списку</a>
+<h1 class="mt-3 mb-4">Отзыв №{{ review.id }}</h1>
+<div class="card shadow-sm"><div class="card-body"><dl class="row mb-0">
+  <dt class="col-sm-3">ID</dt><dd class="col-sm-9">{{ review.id }}</dd>
+  <dt class="col-sm-3">Заказ</dt><dd class="col-sm-9">
+    {% if review.order %}
+      <a href="{% url 'orders:detail' review.order.id %}">{{ review.order.name }}</a>
+    {% else %}
+      №{{ review.order_id }} (запись отсутствует)
+    {% endif %}
+  </dd>
+  <dt class="col-sm-3">Автор</dt><dd class="col-sm-9">
+    {% if review.author %}
+      <a href="{% url 'profiles:detail' review.author.id %}">{{ review.author.name }} {{ review.author.second_name }}</a>
+    {% else %}
+      №{{ review.author_id }} (запись отсутствует)
+    {% endif %}
+  </dd>
+  <dt class="col-sm-3">Оценка</dt><dd class="col-sm-9">{{ review.rating }}/5</dd>
+  <dt class="col-sm-3">Текст</dt><dd class="col-sm-9">{{ review.text|default:'Без текста' }}</dd>
+</dl></div></div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Платёж №{{ transaction.id }}{% endblock %}
+
+{% block content %}
+<a class="link-secondary" href="{% url 'transactions:index' %}">← К списку</a>
+<h1 class="mt-3 mb-4">Платёж №{{ transaction.id }}</h1>
+<div class="card shadow-sm"><div class="card-body"><dl class="row mb-0">
+  <dt class="col-sm-3">ID</dt><dd class="col-sm-9">{{ transaction.id }}</dd>
+  <dt class="col-sm-3">Заказ</dt><dd class="col-sm-9">
+    {% if transaction.order %}
+      <a href="{% url 'orders:detail' transaction.order.id %}">{{ transaction.order.name }}</a>
+    {% else %}
+      №{{ transaction.order_id }} (запись отсутствует)
+    {% endif %}
+  </dd>
+  <dt class="col-sm-3">Сумма</dt><dd class="col-sm-9">{{ transaction.amount }}</dd>
+  <dt class="col-sm-3">Статус</dt><dd class="col-sm-9">{% include 'includes/status_badge.html' with status=transaction.status only %}</dd>
+</dl></div></div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Участник №{{ user.id }}{% endblock %}
+
+{% block content %}
+<a class="link-secondary" href="{% url 'profiles:index' %}">← К списку</a>
+<h1 class="mt-3 mb-4">Участник №{{ user.id }}</h1>
+<div class="card shadow-sm"><div class="card-body"><dl class="row mb-0">
+  <dt class="col-sm-3">ID</dt><dd class="col-sm-9">{{ user.id }}</dd>
+  <dt class="col-sm-3">Имя</dt><dd class="col-sm-9">{{ user.name }}</dd>
+  <dt class="col-sm-3">Фамилия</dt><dd class="col-sm-9">{{ user.second_name }}</dd>
+  <dt class="col-sm-3">Роль</dt><dd class="col-sm-9">{{ user.role }}</dd>
+  <dt class="col-sm-3">Email</dt><dd class="col-sm-9">{{ user.email }}</dd>
+</dl></div></div>
+{% endblock %}
