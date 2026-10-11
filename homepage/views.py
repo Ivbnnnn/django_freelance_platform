@@ -2,6 +2,7 @@
 
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
 
@@ -117,15 +118,4 @@ def status_badge(status):
 
 
 def index(request):
-    links = format_html_join(
-        "",
-        '<a class="btn btn-outline-primary" href="{}">{}</a>',
-        ((reverse(name), label) for name, label in SECTIONS[1:]),
-    )
-    body = format_html(
-        '<section class="hero rounded-4 p-4 p-md-5">'
-        '<h1 class="display-5 fw-bold mb-4">Сервис поиска исполнителей</h1>'
-        '<div class="d-flex flex-wrap gap-2">{}</div></section>',
-        links,
-    )
-    return html_response("Главная", body)
+    return render(request, "homepage/index.html")

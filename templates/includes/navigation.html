@@ -1,0 +1,17 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg bg-white border-bottom" aria-label="Основная навигация">
+  <div class="container flex-wrap gap-2">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% url 'homepage:index' %}">
+      <img class="brand-logo" src="{% static 'homepage/img/logo.svg' %}" alt="" width="32" height="32">
+      Freelance
+    </a>
+    <div class="nav flex-wrap">
+      <a class="nav-link" href="{% url 'homepage:index' %}">Главная</a>
+      <a class="nav-link" href="{% url 'orders:index' %}">Заказы</a>
+      <a class="nav-link" href="{% url 'applications:index' %}">Отклики</a>
+      <a class="nav-link" href="{% url 'transactions:index' %}">Платежи</a>
+      <a class="nav-link" href="{% url 'reviews:index' %}">Отзывы</a>
+      <a class="nav-link" href="{% url 'profiles:index' %}">Участники</a>
+    </div>
+  </div>
+</nav>

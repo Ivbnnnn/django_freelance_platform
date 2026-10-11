@@ -1,6 +1,13 @@
 body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     background: #f7f8fb;
     color: #1e293b;
+}
+
+.brand-logo {
+    flex: none;
 }
 
 .navbar-brand {
@@ -26,4 +33,9 @@ body {
 
 .card {
     border-color: #e2e8f0;
+}
+
+.site-footer {
+    color: #64748b;
+    font-size: .9rem;
 }
