@@ -1,21 +1,11 @@
-from django.urls import reverse
-from django.utils.html import format_html_join
+from django.shortcuts import render
 
-from homepage.views import detail_page, detail_rows, list_page, not_found, object_link
+from homepage.views import detail_page, detail_rows, not_found, object_link
 from services.applications import list_applications
 
 
 def index(request):
-    items = format_html_join(
-        "",
-        '<a class="list-group-item list-group-item-action" href="{}">'
-        '<strong>Отклик №{}</strong> · Заказ №{} · Исполнитель №{}</a>',
-        (
-            (reverse("applications:detail", kwargs={"application_id": item.id}), item.id, item.order_id, item.executor_id)
-            for item in list_applications()
-        ),
-    )
-    return list_page("Отклики", "Ответы исполнителей на опубликованные заказы.", items)
+    return render(request, "applications/application_list.html", {"applications": list_applications()})
 
 
 def detail(request, application_id):

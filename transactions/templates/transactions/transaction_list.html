@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Платежи{% endblock %}
+
+{% block content %}
+<header class="mb-4">
+  <h1>Платежи</h1>
+  <p class="lead text-muted">Операции оплаты по заказам.</p>
+  <p class="text-muted">Всего платежей: {{ transactions|length }}</p>
+</header>
+<div class="list-group">
+  {% for transaction in transactions %}
+    <a class="list-group-item list-group-item-action d-flex justify-content-between gap-3" href="{% url 'transactions:detail' transaction.id %}">
+      <span><strong>Платёж №{{ transaction.id }}</strong> · Заказ №{{ transaction.order_id }} · {{ transaction.amount }}</span>
+      {% include 'includes/status_badge.html' with status=transaction.status only %}
+    </a>
+  {% empty %}
+    <p class="text-muted">Записей пока нет.</p>
+  {% endfor %}
+</div>
+{% endblock %}

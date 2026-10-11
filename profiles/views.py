@@ -1,21 +1,11 @@
-from django.urls import reverse
-from django.utils.html import format_html_join
+from django.shortcuts import render
 
-from homepage.views import detail_page, detail_rows, list_page, not_found
+from homepage.views import detail_page, detail_rows, not_found
 from services.users import list_users
 
 
 def index(request):
-    items = format_html_join(
-        "",
-        '<a class="list-group-item list-group-item-action" href="{}">'
-        '<strong>{} {}</strong> · {}</a>',
-        (
-            (reverse("profiles:detail", kwargs={"user_id": user.id}), user.name, user.second_name, user.role)
-            for user in list_users()
-        ),
-    )
-    return list_page("Участники", "Заказчики и исполнители проекта.", items)
+    return render(request, "profiles/profile_list.html", {"users": list_users()})
 
 
 def detail(request, user_id):

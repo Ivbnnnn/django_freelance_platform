@@ -1,21 +1,11 @@
-from django.urls import reverse
-from django.utils.html import format_html_join
+from django.shortcuts import render
 
-from homepage.views import detail_page, detail_rows, list_page, not_found, object_link
+from homepage.views import detail_page, detail_rows, not_found, object_link
 from services.reviews import list_reviews
 
 
 def index(request):
-    items = format_html_join(
-        "",
-        '<a class="list-group-item list-group-item-action" href="{}">'
-        '<strong>Отзыв №{}</strong> · Заказ №{} · Оценка: {}/5</a>',
-        (
-            (reverse("reviews:detail", kwargs={"review_id": item.id}), item.id, item.order_id, item.rating)
-            for item in list_reviews()
-        ),
-    )
-    return list_page("Отзывы", "Оценки и впечатления участников о заказах.", items)
+    return render(request, "reviews/review_list.html", {"reviews": list_reviews()})
 
 
 def detail(request, review_id):

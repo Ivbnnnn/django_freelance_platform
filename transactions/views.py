@@ -1,22 +1,11 @@
-from django.urls import reverse
-from django.utils.html import format_html_join
+from django.shortcuts import render
 
-from homepage.views import detail_page, detail_rows, list_page, not_found, object_link, status_badge
+from homepage.views import detail_page, detail_rows, not_found, object_link, status_badge
 from services.transactions import list_transactions
 
 
 def index(request):
-    items = format_html_join(
-        "",
-        '<a class="list-group-item list-group-item-action d-flex justify-content-between gap-3" href="{}">'
-        '<span><strong>Платёж №{}</strong> · Заказ №{} · {}</span>{}</a>',
-        (
-            (reverse("transactions:detail", kwargs={"transaction_id": item.id}), item.id, item.order_id,
-             item.amount, status_badge(item.status))
-            for item in list_transactions()
-        ),
-    )
-    return list_page("Платежи", "Операции оплаты по заказам.", items)
+    return render(request, "transactions/transaction_list.html", {"transactions": list_transactions()})
 
 
 def detail(request, transaction_id):

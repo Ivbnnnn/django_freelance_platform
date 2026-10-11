@@ -1,0 +1,9 @@
+{% if status == 'new' %}
+  <span class="badge text-bg-primary order-status">Новый</span>
+{% elif status == 'in_progress' %}
+  <span class="badge text-bg-warning order-status">В работе</span>
+{% elif status == 'paid' %}
+  <span class="badge text-bg-success order-status">Оплачен</span>
+{% else %}
+  <span class="badge text-bg-secondary order-status">{{ status|default:'Не указан' }}</span>
+{% endif %}
