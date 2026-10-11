@@ -1,9 +1,10 @@
-"""Проверки перехода от JSON-сервисов ПР3 к HTTP-страницам ПР5."""
+"""Проверки HTTP-страниц ПР5 и их перевода на шаблоны в ПР6."""
 
 import os
 
 import django
 import pytest
+from django.contrib.staticfiles import finders
 from django.test import Client
 from django.urls import reverse
 
@@ -36,6 +37,11 @@ def test_home_page_has_navigation_and_styles():
     assert 'name="viewport"' in html
     assert "bootstrap@5.3.3" in html
     assert "/static/homepage/site.css" in html
+    assert "/static/homepage/img/logo.svg" in html
+    assert "/static/homepage/js/main.js" in html
+    assert 'id="current-year"' in html
+    assert finders.find("homepage/img/logo.svg")
+    assert finders.find("homepage/js/main.js")
     for section in ("orders", "applications", "transactions", "reviews", "profiles"):
         assert f'href="{reverse(f"{section}:index")}"' in html
 
@@ -105,3 +111,24 @@ def test_html_escapes_json_values_and_never_shows_password():
     assert "<script>alert(1)</script>" not in orders_html
     assert "&lt;b&gt;Имя&lt;/b&gt;" in profile_html
     assert "private-secret" not in profile_html
+
+
+def test_template_counts_status_and_empty_comment(order, executor):
+    application = create_application(str(order.id), str(executor.id), "")
+    client = Client()
+
+    orders_html = client.get("/orders/").content.decode("utf-8")
+    application_html = client.get(f"/applications/{application.id}/").content.decode("utf-8")
+
+    assert "Всего заказов: 1" in orders_html
+    assert "Новый" in orders_html
+    assert "Без комментария" in application_html
+
+
+def test_missing_related_record_is_shown_without_broken_link(executor):
+    application = create_application("999", str(executor.id), "Готов")
+    html = Client().get(f"/applications/{application.id}/").content.decode("utf-8")
+
+    assert "№999 (запись отсутствует)" in html
+    assert 'href="/orders/999/"' not in html
+    assert f'href="/profiles/{executor.id}/"' in html
