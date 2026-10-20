@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<h1>Статистика сервиса</h1>
+<p>Всего заказов: {{ orders_count }} · Откликов: {{ applications_count }}</p>
+<h2 class="h4 mt-4">Заказы по статусам</h2>
+<ul>{% for row in orders_by_status %}<li>{{ row.status }}: {{ row.total }}</li>{% empty %}<li>Данных пока нет.</li>{% endfor %}</ul>
+<h2 class="h4 mt-4">Отклики по заказам</h2>
+<ul>{% for row in applications_by_order %}<li><a href="{% url 'orders:detail' row.id %}">{{ row.name }}</a>: {{ row.total }}</li>{% empty %}<li>Данных пока нет.</li>{% endfor %}</ul>
+<h2 class="h4 mt-4">Платежи по заказам</h2>
+<ul>{% for row in payments_by_order %}<li><a href="{% url 'orders:detail' row.id %}">{{ row.name }}</a>: {{ row.payment_count }} платежей, сумма {{ row.amount_total|floatformat:2 }}</li>{% empty %}<li>Данных пока нет.</li>{% endfor %}</ul>
+{% endblock %}

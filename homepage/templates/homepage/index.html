@@ -8,6 +8,8 @@
   <p class="lead">Здесь заказчики размещают задачи, а исполнители откликаются на них.</p>
   <div class="d-flex flex-wrap gap-2">
     <a class="btn btn-primary" href="{% url 'orders:index' %}">Заказы</a>
+    <a class="btn btn-outline-primary" href="{% url 'orders:search' %}">Поиск заказов</a>
+    <a class="btn btn-outline-primary" href="{% url 'orders:statistics' %}">Статистика</a>
     <a class="btn btn-outline-primary" href="{% url 'applications:index' %}">Отклики</a>
     <a class="btn btn-outline-primary" href="{% url 'transactions:index' %}">Платежи</a>
     <a class="btn btn-outline-primary" href="{% url 'reviews:index' %}">Отзывы</a>

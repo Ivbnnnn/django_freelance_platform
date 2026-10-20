@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Поиск заказов{% endblock %}
+
+{% block content %}
+<h1>Доступные заказы</h1>
+<p class="text-muted">Поиск среди новых заказов по названию.</p>
+<form method="get" class="row g-2 mb-4" action="{% url 'orders:search' %}">
+  <div class="col-sm-8"><label class="visually-hidden" for="query">Название заказа</label>
+    <input id="query" name="q" value="{{ query }}" class="form-control" placeholder="Название заказа"></div>
+  <div class="col-sm-auto"><button class="btn btn-primary" type="submit">Найти</button></div>
+</form>
+<p>Найдено: {{ orders|length }}</p>
+<div class="list-group">
+  {% for order in orders %}
+    {% include 'orders/includes/order_card.html' with order=order only %}
+  {% empty %}<p class="text-muted">Подходящих заказов нет.</p>{% endfor %}
+</div>
+{% endblock %}

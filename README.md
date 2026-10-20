@@ -1,71 +1,57 @@
 # Сервис поиска исполнителей
 
-Учебный проект для публикации заказов, откликов исполнителей, платежей и отзывов. В ПР3 были созданы объектная модель, JSON-хранилище, консольное меню и тесты. ПР5 добавила веб-интерфейс на **Django 5.2**. В ПР6 страницы переведены на шаблоны Django; консольная версия и JSON-данные сохранены.
-
-## Что можно посмотреть в браузере
-
-| Страница | URL | View-функция |
-| --- | --- | --- |
-| Главная и навигация | `/` | `homepage.views.index` |
-| Список заказов | `/orders/` | `orders.views.index` |
-| Карточка заказа | `/orders/<int:order_id>/` | `orders.views.detail` |
-| Список откликов | `/applications/` | `applications.views.index` |
-| Карточка отклика | `/applications/<int:application_id>/` | `applications.views.detail` |
-| Список платежей | `/transactions/` | `transactions.views.index` |
-| Карточка платежа | `/transactions/<int:transaction_id>/` | `transactions.views.detail` |
-| Список отзывов | `/reviews/` | `reviews.views.index` |
-| Карточка отзыва | `/reviews/<int:review_id>/` | `reviews.views.detail` |
-| Список участников | `/profiles/` | `profiles.views.index` |
-| Карточка участника | `/profiles/<int:user_id>/` | `profiles.views.detail` |
-
-Маршруты с числовым ID открывают запись из JSON-хранилища; если записи нет, возвращается HTML-страница с кодом **404**. Ссылки связывают заказ с заказчиком, отклик с заказом и исполнителем, платёж с заказом, отзыв с заказом и автором. Пароли на страницах не показываются.
-
-## Структура
-
-```text
-manage.py                 точка входа Django
-freelance_project/         настройки проекта и корневые URL
-templates/                 общий base.html, навигация, статусы и страница 404
-homepage/                  главная страница, CSS, JavaScript и логотип
-orders/                    страницы заказов
-applications/              страницы откликов
-transactions/              страницы платежей
-reviews/                   страницы отзывов
-profiles/                  страницы участников
-models/                    классы предметной области из ПР3
-services/                  загрузка, связывание и сохранение объектов
-data/                      JSON-файлы существующего проекта
-main.py                    консольное приложение из ПР3
-tests/                     тесты консольной и веб-части
-```
-
-В `freelance_project/urls.py` подключены маршруты приложений; конкретные адреса определены в их `urls.py`. View-функции читают объекты через существующие функции `services/`, находят запись по ID и передают данные в `render()`. Общую HTML-структуру задаёт `templates/base.html`; страницы приложений наследуют его через `{% extends %}` и заполняют блоки `title` и `content`. Разметка в Python не формируется.
-
-Шаблоны списков используют контекст, `{% for %}` и `{% empty %}`. Карточки и общий шаблон статуса используют `{% if %}` для связанных записей и состояний заказа. Повторяющиеся фрагменты навигации, карточки заказа и статуса подключаются через `{% include %}`. Фильтры `length` показывают количество записей, а `default` подставляет текст для пустого комментария или отзыва. Ссылки строятся через `{% url %}` и пространства имён `orders`, `applications`, `transactions`, `reviews` и `profiles`; адреса не закреплены в HTML строками.
-
-Общие статические файлы подключаются через `{% load static %}` и `{% static %}`: `homepage/static/homepage/site.css` оформляет интерфейс, `img/logo.svg` служит логотипом, `js/main.js` выводит текущий год в подвале. Bootstrap 5.3.3 подключён через CDN. Значения из JSON автоматически экранируются шаблонами Django; пароль пользователя не выводится в HTML.
-
-Объекты `User`, `Order`, `Application`, `Transaction` и `Review` остаются обычными классами Python из `models/`; данные хранятся в `data/*.json`. Веб-страницы только читают данные. Django ORM, веб-формы и аутентификация в текущей версии не используются.
+Учебный проект ПР3–ПР7: заказчики размещают заказы, исполнители оставляют отклики, а сервис показывает платежи и отзывы. ПР6 использует шаблоны Django; ПР7 добавляет прямую работу с SQLite через `sqlite3`, без Django ORM. Консольное приложение и исходные JSON-файлы сохранены.
 
 ## Запуск
 
-Нужен Python 3.11 или новее. Из корня репозитория в PowerShell:
+Требуются Python 3.11+ и зависимости из `requirements.txt`.
 
 ```powershell
-py -m venv venv
-.\venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
+python -m db.import_json
 python manage.py check
 python manage.py runserver
 ```
 
-Откройте <http://127.0.0.1:8000/>. Для показанных страниц миграции базы данных не нужны: источник данных — JSON-файлы. Консольный вариант по-прежнему запускается командой `python main.py`.
+Откройте <http://127.0.0.1:8000/>. Импорт создаёт или обновляет `data/freelance.sqlite` из `data/*.json`. Его следует повторить после изменения JSON. Django-миграции для этих страниц не нужны. Консольная версия запускается командой `python main.py` и продолжает работать с JSON.
 
-## Проверки
+## Страницы
+
+| Раздел | Адрес |
+| --- | --- |
+| Главная | `/` |
+| Заказы и карточка | `/orders/`, `/orders/<id>/` |
+| Поиск новых заказов по названию | `/orders/search/?q=...` |
+| Статистика статусов, откликов и платежей | `/orders/statistics/` |
+| Отклики и карточка | `/applications/`, `/applications/<id>/` |
+| Платежи и карточка | `/transactions/`, `/transactions/<id>/` |
+| Отзывы и карточка | `/reviews/`, `/reviews/<id>/` |
+| Участники и карточка | `/profiles/`, `/profiles/<id>/` |
+
+Все страницы читают данные из SQLite. Несуществующий ID даёт ответ 404. Отсутствующие связанные записи отображаются без ошибочной ссылки. Пароли пользователей в HTML не выводятся.
+
+## Слой базы данных
+
+`sql/schema.sql` создаёт пять таблиц. `db/database.py` открывает соединение с проверкой внешних ключей и возвращает именованные результаты `sqlite3.Row`. `db/import_json.py` переносит исходные записи пакетными вставками. Исторические ссылки на отсутствующие объекты сохраняются как текстовые `source_*_id`, а соответствующие внешние ключи остаются `NULL`; поэтому импорт не теряет отклики и отзывы с некорректными ссылками.
+
+| Таблица | Поля (тип) | Ключи |
+| --- | --- | --- |
+| `users` | `id INTEGER`, `name TEXT`, `second_name TEXT`, `role TEXT`, `password TEXT`, `email TEXT` | `id` PK |
+| `orders` | `id INTEGER`, `name TEXT`, `budget TEXT`, `customer_id INTEGER`, `source_customer_id TEXT`, `status TEXT` | `id` PK; `customer_id` → `users.id` |
+| `applications` | `id INTEGER`, `order_id INTEGER`, `executor_id INTEGER`, `source_order_id TEXT`, `source_executor_id TEXT`, `comment TEXT` | `id` PK; `order_id` → `orders.id`; `executor_id` → `users.id` |
+| `transactions` | `id INTEGER`, `order_id INTEGER`, `source_order_id TEXT`, `amount TEXT`, `status TEXT` | `id` PK; `order_id` → `orders.id` |
+| `reviews` | `id INTEGER`, `order_id INTEGER`, `author_id INTEGER`, `source_order_id TEXT`, `source_author_id TEXT`, `rating INTEGER`, `text TEXT` | `id` PK; `order_id` → `orders.id`; `author_id` → `users.id` |
+
+`sql/queries.sql` содержит 16 проверяемых запросов: списки, выборку по ID и поиск с `WHERE`, связи через `JOIN`, подсчёты через `COUNT`, группировки `GROUP BY`, сумму платежей. Как в примере ПР7, Django-представления содержат SQL непосредственно в `views.py` и выполняют его через `sqlite3` с параметрами `?`; файл `queries.sql` оставлен как перечень запросов для проверки. `db/repository.py` сохраняет преобразование строк результата для существующих шаблонов. Страницы поиска и статистики дают пользовательские сценарии для фильтрации и агрегации. Для поиска свободных помещений из примера методички здесь используется соответствующий предметной области поиск новых заказов; дата у заказов отсутствует.
+
+Шаблоны используют `base.html`, `{% extends %}`, `{% block %}`, `{% include %}`, контекст, циклы, условия, фильтры, `{% url %}` и `{% static %}`. CSS, JavaScript и логотип находятся в `homepage/static/homepage/`.
+
+## Проверка
 
 ```powershell
-python -m pytest -v
-python -m flake8 .
+python manage.py check
+python -m pytest -q
+python -m flake8 . --extend-exclude=dvenv
 ```
 
-`tests/test_web.py` проверяет маршруты, навигацию, статические файлы, данные из сервисов, связи объектов, пустые списки, ответы 404, экранирование HTML и отсутствие пароля в ответе. Остальные тесты проверяют код ПР3. Настройки локализации Django: русский язык и часовой пояс `Europe/Moscow`.
+`tests/test_web.py` проверяет SQL-страницы, поиск, статистику, внешние ключи, 404, экранирование HTML и отсутствие пароля. Остальные тесты проверяют объектную и консольную части проекта.

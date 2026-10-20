@@ -5,3 +5,4 @@ __pycache__/
 .test_tmp/
 .pytest_tmp/
 db.sqlite3
+tmp/

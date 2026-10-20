@@ -15,7 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+
+from homepage import views as homepage_views
+
+
+handler404 = "homepage.views.not_found"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +30,5 @@ urlpatterns = [
     path('transactions/', include('transactions.urls')),
     path('reviews/', include('reviews.urls')),
     path('profiles/', include('profiles.urls')),
+    re_path(r'^.*$', homepage_views.not_found),
 ]
