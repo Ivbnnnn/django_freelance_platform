@@ -1,4 +1,6 @@
+from django import forms
 from django.contrib import admin
+from django.db import models
 
 from applications.models import Application
 from transactions.models import Transaction
@@ -6,7 +8,11 @@ from reviews.models import Review
 from .models import Order
 
 
-class ApplicationInline(admin.TabularInline):
+class CompactTextInline(admin.TabularInline):
+    formfield_overrides = {models.TextField: {'widget': forms.Textarea(attrs={'rows': 2, 'cols': 32})}}
+
+
+class ApplicationInline(CompactTextInline):
     model = Application
     extra = 0
     autocomplete_fields = ['executor']
@@ -19,7 +25,7 @@ class TransactionInline(admin.TabularInline):
     show_change_link = True
 
 
-class ReviewInline(admin.TabularInline):
+class ReviewInline(CompactTextInline):
     model = Review
     extra = 0
     autocomplete_fields = ['author']
