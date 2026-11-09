@@ -1,8 +1,12 @@
 from django.db import models
 from django.urls import reverse
 
+from .querysets import OrderQuerySet
+
 
 class Order(models.Model):
+    objects = OrderQuerySet.as_manager()
+
     class Status(models.TextChoices):
         NEW = 'new', 'Новый'
         IN_PROGRESS = 'in_progress', 'В работе'

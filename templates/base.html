@@ -14,7 +14,7 @@
     {% block content %}{% endblock %}
   </main>
   <footer class="container site-footer py-4 mt-auto border-top">
-    <span>© <span id="current-year"></span> Freelance</span>
+    <span>© <span id="current-year"></span> {{ site_name }} · Доступных заказов: {{ available_orders_count }}</span>
   </footer>
   <script src="{% static 'homepage/js/main.js' %}" defer></script>
 </body>

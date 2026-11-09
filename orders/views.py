@@ -9,12 +9,11 @@ from .models import Order
 
 def index(request):
     form = OrderFilterForm(request.GET)
-    orders = Order.objects.select_related('customer')
+    orders = Order.objects.with_customer()
     if form.is_valid():
         data = form.cleaned_data
         if data['q']:
-            orders = orders.filter(Q(name__icontains=data['q']) | Q(customer__name__icontains=data['q']) |
-                                   Q(customer__second_name__icontains=data['q']))
+            orders = orders.search(data['q'])
         if data['status']:
             orders = orders.filter(status=data['status'])
         if data['customer']:
@@ -30,14 +29,14 @@ def index(request):
 
 def detail(request, order_id):
     order = get_object_or_404(
-        Order.objects.select_related('customer').prefetch_related('applications__executor'), pk=order_id,
+        Order.objects.with_customer().prefetch_related('applications__executor'), pk=order_id,
     )
     return render(request, 'orders/order_detail.html', {'order': order})
 
 
 def search(request):
     query = request.GET.get('q', '').strip()[:100]
-    orders = Order.objects.filter(status=Order.Status.NEW).exclude(status=Order.Status.CANCELLED)
+    orders = Order.objects.available()
     orders = orders.filter(name__icontains=query).select_related('customer').order_by('name', 'id')
     return render(request, 'orders/search.html', {'query': query, 'orders': orders})
 
@@ -49,6 +48,7 @@ def stats(request):
     return render(request, 'orders/statistics.html', {
         **totals,
         'applications_count': Application.objects.count(),
+        'active_count': Order.objects.active().count(),
         'orders_by_status': Order.objects.values('status').annotate(total=Count('id')).order_by('status'),
         'applications_by_order': Order.objects.annotate(total=Count('applications')).values('id', 'name', 'total'),
         'payments_by_order': Order.objects.annotate(

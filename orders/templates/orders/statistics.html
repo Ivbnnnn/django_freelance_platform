@@ -11,7 +11,7 @@
 <ul>{% for row in applications_by_order %}<li><a href="{% url 'orders:detail' row.id %}">{{ row.name }}</a>: {{ row.total }}</li>{% empty %}<li>Данных пока нет.</li>{% endfor %}</ul>
 <h2 class="h4 mt-4">Платежи по заказам</h2>
 <ul>{% for row in payments_by_order %}<li><a href="{% url 'orders:detail' row.id %}">{{ row.name }}</a>: {{ row.payment_count }} платежей, сумма {{ row.amount_total|floatformat:2 }}</li>{% empty %}<li>Данных пока нет.</li>{% endfor %}</ul>
-<p>Доступных заказов: {{ open_count }}</p>
+<p>Доступных заказов: {{ open_count }} · Активных заказов: {{ active_count }}</p>
 <h2 class="h4 mt-4">Заказы по заказчикам</h2>
 <ul>{% for row in customer_totals %}<li>{{ row.customer_name|default:'Не указан' }}: {{ row.total }}</li>{% endfor %}</ul>
 {% endblock %}
