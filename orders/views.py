@@ -10,8 +10,10 @@ from .models import Order
 def index(request):
     form = OrderFilterForm(request.GET)
     orders = Order.objects.with_customer()
+    page_size = 5
     if form.is_valid():
         data = form.cleaned_data
+        page_size = int(data['page_size'] or 5)
         if data['q']:
             orders = orders.search(data['q'])
         if data['status']:
@@ -23,7 +25,7 @@ def index(request):
         orders = orders.order_by(*sorts.get(data['sort'], ('id',)))
     else:
         orders = orders.none()
-    page = Paginator(orders, 5).get_page(request.GET.get('page'))
+    page = Paginator(orders, page_size).get_page(request.GET.get('page'))
     return render(request, 'orders/order_list.html', {'orders': page.object_list, 'page_obj': page, 'form': form})
 
 

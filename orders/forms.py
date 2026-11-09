@@ -10,3 +10,5 @@ class OrderFilterForm(forms.Form):
     customer = forms.ModelChoiceField(label='Заказчик', required=False, queryset=User.objects.all())
     sort = forms.ChoiceField(label='Сортировка', required=False, choices=[
         ('id', 'По номеру'), ('name', 'По названию'), ('-id', 'Сначала новые'), ('customer', 'По заказчику')])
+    page_size = forms.ChoiceField(label='Записей на странице', required=False, initial='5',
+                                  choices=[('1', '1'), ('5', '5'), ('10', '10')])

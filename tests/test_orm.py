@@ -58,11 +58,12 @@ def test_filters_sort_and_pagination():
     assert 'sort=-id' in response.content.decode()
     assert 'page=3' in response.content.decode()
     assert 'Скрытый' not in client.get('/orders/search/').content.decode()
-    for params in [{'customer': 'oops'}, {'status': 'oops'}, {'sort': 'password'}]:
+    for params in [{'customer': 'oops'}, {'status': 'oops'}, {'sort': 'password'}, {'page_size': '100000'}]:
         response = client.get('/orders/', params)
         assert response.status_code == 200
         assert response.context['form'].errors
         assert response.context['page_obj'].paginator.count == 0
+    assert client.get('/orders/', {'page_size': '1'}).context['page_obj'].paginator.num_pages == 13
     assert client.get('/orders/', {'page': 'oops'}).context['page_obj'].number == 1
     assert client.get('/orders/', {'page': '999'}).context['page_obj'].number == 3
 

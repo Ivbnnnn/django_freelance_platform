@@ -1,0 +1,60 @@
+Проверка ПР9 и ПР10 — 09.11.2026
+
+> python manage.py check
+System check identified no issues (0 silenced).
+
+Exit code: 0
+
+> python manage.py makemigrations --check --dry-run
+No changes detected
+
+Exit code: 0
+
+> python manage.py showmigrations
+admin
+ [X] 0001_initial
+ [X] 0002_logentry_remove_auto_add
+ [X] 0003_logentry_add_action_flag_choices
+applications
+ [X] 0001_initial
+auth
+ [X] 0001_initial
+ [X] 0002_alter_permission_name_max_length
+ [X] 0003_alter_user_email_max_length
+ [X] 0004_alter_user_username_opts
+ [X] 0005_alter_user_last_login_null
+ [X] 0006_require_contenttypes_0002
+ [X] 0007_alter_validators_add_error_messages
+ [X] 0008_alter_user_username_max_length
+ [X] 0009_alter_user_last_name_max_length
+ [X] 0010_alter_group_name_max_length
+ [X] 0011_update_proxy_permissions
+ [X] 0012_alter_user_first_name_max_length
+contenttypes
+ [X] 0001_initial
+ [X] 0002_remove_content_type_name
+homepage
+ (no migrations)
+orders
+ [X] 0001_initial
+profiles
+ [X] 0001_initial
+reviews
+ [X] 0001_initial
+sessions
+ [X] 0001_initial
+transactions
+ [X] 0001_initial
+
+Exit code: 0
+
+> python -m pytest -q
+.............................................                            [100%]
+45 passed in 3.53s
+
+Exit code: 0
+
+> python -m flake8 . --extend-exclude=dvenv
+
+
+Exit code: 0
