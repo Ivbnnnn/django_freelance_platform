@@ -11,14 +11,14 @@
     {% if review.order %}
       <a href="{% url 'orders:detail' review.order.id %}">{{ review.order.name }}</a>
     {% else %}
-      №{{ review.order_id }} (запись отсутствует)
+      №{{ review.source_order_id }} (запись отсутствует)
     {% endif %}
   </dd>
   <dt class="col-sm-3">Автор</dt><dd class="col-sm-9">
     {% if review.author %}
       <a href="{% url 'profiles:detail' review.author.id %}">{{ review.author.name }} {{ review.author.second_name }}</a>
     {% else %}
-      №{{ review.author_id }} (запись отсутствует)
+      №{{ review.source_author_id }} (запись отсутствует)
     {% endif %}
   </dd>
   <dt class="col-sm-3">Оценка</dt><dd class="col-sm-9">{{ review.rating }}/5</dd>

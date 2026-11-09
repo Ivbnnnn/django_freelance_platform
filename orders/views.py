@@ -1,87 +1,60 @@
-from django.shortcuts import render
-from contextlib import closing
+from django.core.paginator import Paginator
+from django.db.models import Count, F, Q, Sum
+from django.shortcuts import get_object_or_404, render
 
-from db.database import connect
-from db.repository import _record
+from applications.models import Application
+from .forms import OrderFilterForm
+from .models import Order
 
 
 def index(request):
-    with closing(connect()) as conn:
-        rows = conn.execute("""
-            SELECT o.*, u.name AS customer_name,
-                   u.second_name AS customer_second_name
-            FROM orders AS o
-            LEFT JOIN users AS u ON u.id = o.customer_id
-            ORDER BY o.id;
-        """).fetchall()
-    orders = [_record("orders", row) for row in rows]
-    return render(request, "orders/order_list.html", {"orders": orders})
+    form = OrderFilterForm(request.GET)
+    orders = Order.objects.select_related('customer')
+    if form.is_valid():
+        data = form.cleaned_data
+        if data['q']:
+            orders = orders.filter(Q(name__icontains=data['q']) | Q(customer__name__icontains=data['q']) |
+                                   Q(customer__second_name__icontains=data['q']))
+        if data['status']:
+            orders = orders.filter(status=data['status'])
+        if data['customer']:
+            orders = orders.filter(customer=data['customer'])
+        sorts = {'id': ('id',), '-id': ('-id',), 'name': ('name', 'id'),
+                 'customer': ('customer__name', 'customer__second_name', 'id')}
+        orders = orders.order_by(*sorts.get(data['sort'], ('id',)))
+    else:
+        orders = orders.none()
+    page = Paginator(orders, 5).get_page(request.GET.get('page'))
+    return render(request, 'orders/order_list.html', {'orders': page.object_list, 'page_obj': page, 'form': form})
 
 
 def detail(request, order_id):
-    with closing(connect()) as conn:
-        row = conn.execute("""
-            SELECT o.*, u.name AS customer_name,
-                   u.second_name AS customer_second_name
-            FROM orders AS o
-            LEFT JOIN users AS u ON u.id = o.customer_id
-            WHERE o.id = ?;
-        """, (order_id,)).fetchone()
-    if row is None:
-        return render(request, "record_not_found.html", {
-            "title": "Заказ не найден", "back_route": "orders:index",
-        }, status=404)
-    order = _record("orders", row)
-    return render(request, "orders/order_detail.html", {"order": order})
+    order = get_object_or_404(
+        Order.objects.select_related('customer').prefetch_related('applications__executor'), pk=order_id,
+    )
+    return render(request, 'orders/order_detail.html', {'order': order})
 
 
 def search(request):
-    query = request.GET.get("q", "").strip()
-    escaped = query.replace("!", "!!").replace("%", "!%").replace("_", "!_")
-    with closing(connect()) as conn:
-        rows = conn.execute("""
-            SELECT o.*, u.name AS customer_name,
-                   u.second_name AS customer_second_name
-            FROM orders AS o
-            LEFT JOIN users AS u ON u.id = o.customer_id
-            WHERE o.status = 'new' AND o.name LIKE ? ESCAPE '!'
-            ORDER BY o.id;
-        """, (f"%{escaped}%",)).fetchall()
-    orders = [_record("orders", row) for row in rows]
-    return render(request, "orders/search.html", {
-        "query": query, "orders": orders,
-    })
+    query = request.GET.get('q', '').strip()[:100]
+    orders = Order.objects.filter(status=Order.Status.NEW).exclude(status=Order.Status.CANCELLED)
+    orders = orders.filter(name__icontains=query).select_related('customer').order_by('name', 'id')
+    return render(request, 'orders/search.html', {'query': query, 'orders': orders})
 
 
 def stats(request):
-    with closing(connect()) as conn:
-        orders_count = conn.execute(
-            "SELECT COUNT(*) AS total FROM orders;"
-        ).fetchone()["total"]
-        applications_count = conn.execute(
-            "SELECT COUNT(*) AS total FROM applications;"
-        ).fetchone()["total"]
-        orders_by_status = conn.execute("""
-            SELECT status, COUNT(*) AS total
-            FROM orders GROUP BY status ORDER BY status;
-        """).fetchall()
-        applications_by_order = conn.execute("""
-            SELECT o.id, o.name, COUNT(a.id) AS total
-            FROM orders AS o
-            LEFT JOIN applications AS a ON a.order_id = o.id
-            GROUP BY o.id, o.name ORDER BY o.id;
-        """).fetchall()
-        payments_by_order = conn.execute("""
-            SELECT o.id, o.name, COUNT(t.id) AS payment_count,
-                   COALESCE(SUM(CAST(t.amount AS REAL)), 0) AS amount_total
-            FROM orders AS o
-            LEFT JOIN transactions AS t ON t.order_id = o.id
-            GROUP BY o.id, o.name ORDER BY o.id;
-        """).fetchall()
-    return render(request, "orders/statistics.html", {
-        "orders_count": orders_count,
-        "applications_count": applications_count,
-        "orders_by_status": orders_by_status,
-        "applications_by_order": applications_by_order,
-        "payments_by_order": payments_by_order,
+    totals = Order.objects.aggregate(
+        orders_count=Count('id'), open_count=Count('id', filter=Q(status=Order.Status.NEW)),
+    )
+    return render(request, 'orders/statistics.html', {
+        **totals,
+        'applications_count': Application.objects.count(),
+        'orders_by_status': Order.objects.values('status').annotate(total=Count('id')).order_by('status'),
+        'applications_by_order': Order.objects.annotate(total=Count('applications')).values('id', 'name', 'total'),
+        'payments_by_order': Order.objects.annotate(
+            payment_count=Count('transactions', filter=Q(transactions__status='paid')),
+            amount_total=Sum('transactions__amount', filter=Q(transactions__status='paid'), default=0),
+        ).values('id', 'name', 'payment_count', 'amount_total'),
+        'customer_totals': Order.objects.annotate(customer_name=F('customer__name')).values('customer_name')
+        .annotate(total=Count('id')).order_by('-total', 'customer_name'),
     })

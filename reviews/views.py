@@ -1,37 +1,13 @@
-from contextlib import closing
+from django.shortcuts import get_object_or_404, render
 
-from django.shortcuts import render
-
-from db.database import connect
-from db.repository import _record
+from .models import Review
 
 
 def index(request):
-    with closing(connect()) as conn:
-        rows = conn.execute("""
-            SELECT r.*, o.name AS order_name, u.name AS author_name
-            FROM reviews AS r
-            LEFT JOIN orders AS o ON o.id = r.order_id
-            LEFT JOIN users AS u ON u.id = r.author_id
-            ORDER BY r.id;
-        """).fetchall()
-    return render(request, "reviews/review_list.html", {
-        "reviews": [_record("reviews", row) for row in rows],
-    })
+    records = Review.objects.all().select_related('order', 'author')
+    return render(request, 'reviews/review_list.html', {'reviews': records})
 
 
 def detail(request, review_id):
-    with closing(connect()) as conn:
-        row = conn.execute("""
-            SELECT r.*, o.name AS order_name, u.name AS author_name
-            FROM reviews AS r
-            LEFT JOIN orders AS o ON o.id = r.order_id
-            LEFT JOIN users AS u ON u.id = r.author_id
-            WHERE r.id = ?;
-        """, (review_id,)).fetchone()
-    if row is None:
-        return render(request, "record_not_found.html", {
-            "title": "Отзыв не найден", "back_route": "reviews:index",
-        }, status=404)
-    review = _record("reviews", row)
-    return render(request, "reviews/review_detail.html", {"review": review})
+    record = get_object_or_404(Review.objects.select_related('order', 'author'), pk=review_id)
+    return render(request, 'reviews/review_detail.html', {'review': record})

@@ -13,11 +13,15 @@
   <dt class="col-sm-3">Заказчик</dt><dd class="col-sm-9">
     {% if order.customer %}
       <a href="{% url 'profiles:detail' order.customer.id %}">{{ order.customer.name }} {{ order.customer.second_name }}</a>
-    {% elif order.customer_id %}
-      №{{ order.customer_id }} (запись отсутствует)
+    {% elif order.source_customer_id %}
+      №{{ order.source_customer_id }} (запись отсутствует)
     {% else %}
       Не указан
     {% endif %}
   </dd>
 </dl></div></div>
+<h2 class="h4 mt-4">Отклики</h2>
+<ul>{% for application in order.applications.all %}
+<li><a href="{% url 'applications:detail' application.id %}">{{ application }}</a> · {{ application.executor|default:'Участник отсутствует' }}</li>
+{% empty %}<li>Откликов пока нет.</li>{% endfor %}</ul>
 {% endblock %}

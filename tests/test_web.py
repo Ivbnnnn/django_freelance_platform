@@ -6,6 +6,7 @@ import os
 import django
 import pytest
 from django.test import Client
+from django.core.management import call_command
 
 from db import database, import_json
 
@@ -14,7 +15,7 @@ django.setup()
 
 
 @pytest.fixture
-def web_database(tmp_path, monkeypatch):
+def web_database(tmp_path, monkeypatch, db):
     source = tmp_path / "source"
     source.mkdir()
     samples = {
@@ -45,10 +46,11 @@ def web_database(tmp_path, monkeypatch):
     path = tmp_path / "freelance.sqlite"
     import_json.import_data(path)
     monkeypatch.setattr(database, "DATABASE", path)
+    call_command("import_legacy", source=path)
     return path
 
 
-def test_pages_show_sqlite_data(web_database):
+def test_pages_show_orm_data(web_database):
     client = Client()
     pages = [
         ("/", "Поиск заказов"), ("/orders/", "Логотип"),

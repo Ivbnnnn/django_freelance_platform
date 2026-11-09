@@ -11,7 +11,7 @@
 <div class="list-group">
   {% for review in reviews %}
     <a class="list-group-item list-group-item-action" href="{% url 'reviews:detail' review.id %}">
-      <strong>Отзыв №{{ review.id }}</strong> · Заказ №{{ review.order_id }} · Оценка: {{ review.rating }}/5
+      <strong>Отзыв №{{ review.id }}</strong> · Заказ №{{ review.source_order_id }} · Оценка: {{ review.rating }}/5
     </a>
   {% empty %}
     <p class="text-muted">Записей пока нет.</p>

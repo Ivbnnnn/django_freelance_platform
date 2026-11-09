@@ -1,31 +1,13 @@
-from contextlib import closing
+from django.shortcuts import get_object_or_404, render
 
-from django.shortcuts import render
-
-from db.database import connect
-from db.repository import _record
+from .models import User
 
 
 def index(request):
-    with closing(connect()) as conn:
-        rows = conn.execute("""
-            SELECT id, name, second_name, role, email
-            FROM users ORDER BY id;
-        """).fetchall()
-    return render(request, "profiles/profile_list.html", {
-        "users": [_record("users", row) for row in rows],
-    })
+    records = User.objects.all()
+    return render(request, 'profiles/profile_list.html', {'users': records})
 
 
 def detail(request, user_id):
-    with closing(connect()) as conn:
-        row = conn.execute("""
-            SELECT id, name, second_name, role, email
-            FROM users WHERE id = ?;
-        """, (user_id,)).fetchone()
-    if row is None:
-        return render(request, "record_not_found.html", {
-            "title": "Участник не найден", "back_route": "profiles:index",
-        }, status=404)
-    user = _record("users", row)
-    return render(request, "profiles/profile_detail.html", {"user": user})
+    record = get_object_or_404(User.objects.all(), pk=user_id)
+    return render(request, 'profiles/profile_detail.html', {'user': record})

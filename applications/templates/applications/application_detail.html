@@ -11,14 +11,14 @@
     {% if application.order %}
       <a href="{% url 'orders:detail' application.order.id %}">{{ application.order.name }}</a>
     {% else %}
-      №{{ application.order_id }} (запись отсутствует)
+      №{{ application.source_order_id }} (запись отсутствует)
     {% endif %}
   </dd>
   <dt class="col-sm-3">Исполнитель</dt><dd class="col-sm-9">
     {% if application.executor %}
       <a href="{% url 'profiles:detail' application.executor.id %}">{{ application.executor.name }} {{ application.executor.second_name }}</a>
     {% else %}
-      №{{ application.executor_id }} (запись отсутствует)
+      №{{ application.source_executor_id }} (запись отсутствует)
     {% endif %}
   </dd>
   <dt class="col-sm-3">Комментарий</dt><dd class="col-sm-9">{{ application.comment|default:'Без комментария' }}</dd>

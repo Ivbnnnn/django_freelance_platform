@@ -11,7 +11,7 @@
 <div class="list-group">
   {% for transaction in transactions %}
     <a class="list-group-item list-group-item-action d-flex justify-content-between gap-3" href="{% url 'transactions:detail' transaction.id %}">
-      <span><strong>Платёж №{{ transaction.id }}</strong> · Заказ №{{ transaction.order_id }} · {{ transaction.amount }}</span>
+      <span><strong>Платёж №{{ transaction.id }}</strong> · Заказ №{{ transaction.source_order_id }} · {{ transaction.amount }}</span>
       {% include 'includes/status_badge.html' with status=transaction.status only %}
     </a>
   {% empty %}

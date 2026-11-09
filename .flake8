@@ -2,3 +2,5 @@
 max-line-length = 127
 exclude = .git,.mypy_cache,.pytest_cache,.pytest_tmp,.test_tmp,dvenv,__pycache__
 jobs = 1
+
+per-file-ignores = */migrations/*.py:E501

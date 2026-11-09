@@ -11,7 +11,7 @@
     {% if transaction.order %}
       <a href="{% url 'orders:detail' transaction.order.id %}">{{ transaction.order.name }}</a>
     {% else %}
-      №{{ transaction.order_id }} (запись отсутствует)
+      №{{ transaction.source_order_id }} (запись отсутствует)
     {% endif %}
   </dd>
   <dt class="col-sm-3">Сумма</dt><dd class="col-sm-9">{{ transaction.amount }}</dd>
